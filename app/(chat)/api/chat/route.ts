@@ -119,17 +119,24 @@ export async function POST(request: Request) {
         },
       }
     },
-    onFinish: async ({ responseMessages }) => {
-      if (session.user && session.user.id) {
-        try {
-          await saveChat({
-            id,
-            messages: [...coreMessages, ...responseMessages],
-            userId: session.user.id,
-          });
-        } catch (error) {
-          console.error("Failed to save chat");
-        }
+    onFinish: async ({ text, toolCalls, toolResults, usage, finishReason }) => {
+      if (!session?.user?.id) {
+        console.error("No user ID found in session");
+        return;
+      }
+      
+      try {
+        console.log("Saving chat with tool results");
+        await saveChat({ 
+          id, 
+          messages: coreMessages.concat([{ role: "assistant", content: text }]),
+          userId: session.user.id,
+          toolCalls,
+          toolResults
+        });
+        console.log("Successfully saved chat with tool results");
+      } catch (error) {
+        console.error("Failed to save chat:", error);
       }
     },
     experimental_telemetry: {

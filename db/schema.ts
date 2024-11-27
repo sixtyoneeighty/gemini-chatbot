@@ -21,13 +21,17 @@ export const chat = pgTable("Chat", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   createdAt: timestamp("createdAt").notNull(),
   messages: json("messages").notNull(),
+  toolCalls: json("toolCalls"),
+  toolResults: json("toolResults"),
   userId: uuid("userId")
     .notNull()
     .references(() => user.id),
 });
 
-export type Chat = Omit<InferSelectModel<typeof chat>, "messages"> & {
+export type Chat = Omit<InferSelectModel<typeof chat>, "messages" | "toolCalls" | "toolResults"> & {
   messages: Array<Message>;
+  toolCalls?: any;
+  toolResults?: any;
 };
 
 export const reservation = pgTable("Reservation", {

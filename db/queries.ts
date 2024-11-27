@@ -7,10 +7,18 @@ import postgres from "postgres";
 
 import { user, chat, User, reservation } from "./schema";
 
+if (!process.env.POSTGRES_URL) {
+  throw new Error("POSTGRES_URL environment variable is not set");
+}
+
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
-let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
+let client = postgres(`${process.env.POSTGRES_URL}?sslmode=require`, {
+  max: 1,
+  idle_timeout: 20,
+  connect_timeout: 10
+});
 let db = drizzle(client);
 
 export async function getUser(email: string): Promise<Array<User>> {
@@ -38,29 +46,41 @@ export async function saveChat({
   id,
   messages,
   userId,
+  toolCalls,
+  toolResults,
 }: {
   id: string;
   messages: any;
   userId: string;
+  toolCalls?: any;
+  toolResults?: any;
 }) {
   try {
+    console.log("Saving chat with ID:", id);
     const selectedChats = await db.select().from(chat).where(eq(chat.id, id));
 
     if (selectedChats.length > 0) {
+      console.log("Updating existing chat");
       return await db
         .update(chat)
-        .set({ messages })
+        .set({ messages, toolCalls, toolResults })
         .where(eq(chat.id, id));
     }
 
+    console.log("Creating new chat");
     return await db.insert(chat).values({
       id,
       messages,
       userId,
+      toolCalls,
+      toolResults,
       createdAt: new Date(),
     });
   } catch (error) {
-    console.error("Failed to save chat to database");
+    console.error("Failed to save chat to database:", error);
+    if (error instanceof Error) {
+      console.error("Database error details:", error.message, error.stack);
+    }
     throw error;
   }
 }
@@ -76,13 +96,20 @@ export async function deleteChatById({ id }: { id: string }) {
 
 export async function getChatsByUserId({ id }: { id: string }) {
   try {
-    return await db
+    console.log("Getting chats for user:", id);
+    const result = await db
       .select()
       .from(chat)
       .where(eq(chat.userId, id))
       .orderBy(desc(chat.createdAt));
+    
+    console.log("Found chats:", result);
+    return result;
   } catch (error) {
     console.error("Failed to get chats from database:", error);
+    if (error instanceof Error) {
+      console.error("Database error details:", error.message, error.stack);
+    }
     throw error;
   }
 }
