@@ -21,14 +21,14 @@ import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
   {
-    title: "Help me book a flight",
-    label: "from San Francisco to London",
-    action: "Help me book a flight from San Francisco to London",
+    title: "What's your favorite way",
+    label: "to combine your love for gaming and nudism?",
+    action: "What's your favorite way to combine your love for gaming and nudism?",
   },
   {
-    title: "What is the status",
-    label: "of flight BA142 flying tmrw?",
-    action: "What is the status of flight BA142 flying tmrw?",
+    title: "What's the biggest misconception",
+    label: "about Nerdists you've encountered?",
+    action: "What's the biggest misconception about Nerdists you've encountered?",
   },
 ];
 
