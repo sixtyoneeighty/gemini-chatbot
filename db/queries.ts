@@ -49,20 +49,18 @@ export async function saveChat({
     if (selectedChats.length > 0) {
       return await db
         .update(chat)
-        .set({
-          messages: JSON.stringify(messages),
-        })
+        .set({ messages })
         .where(eq(chat.id, id));
     }
 
     return await db.insert(chat).values({
       id,
-      createdAt: new Date(),
-      messages: JSON.stringify(messages),
+      messages,
       userId,
+      createdAt: new Date(),
     });
   } catch (error) {
-    console.error("Failed to save chat in database");
+    console.error("Failed to save chat to database");
     throw error;
   }
 }
@@ -84,7 +82,7 @@ export async function getChatsByUserId({ id }: { id: string }) {
       .where(eq(chat.userId, id))
       .orderBy(desc(chat.createdAt));
   } catch (error) {
-    console.error("Failed to get chats by user from database");
+    console.error("Failed to get chats from database:", error);
     throw error;
   }
 }
