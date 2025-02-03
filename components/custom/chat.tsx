@@ -1,7 +1,7 @@
 "use client";
 
-import { Message as AIMessage, useChat } from "ai";
-import { Attachment } from "ai";
+import { useChat } from "ai/react";
+import { Message as AIMessage } from "ai";
 import { useEffect, useRef } from "react";
 
 import { Message } from "./message";
@@ -19,8 +19,6 @@ export function Chat({ id, initialMessages }: ChatProps) {
     handleSubmit,
     isLoading,
     error,
-    append,
-    setMessages,
   } = useChat({
     api: "/api/chat",
     id,
@@ -44,12 +42,11 @@ export function Chat({ id, initialMessages }: ChatProps) {
         ref={scrollRef}
         className="flex-1 overflow-y-auto pb-[200px] pt-4 space-y-6"
       >
-        {messages.map((message) => (
+        {messages.map((message: AIMessage) => (
           <Message
             key={message.id}
             role={message.role}
             content={message.content}
-            attachments={message.experimental_attachments}
           />
         ))}
 
