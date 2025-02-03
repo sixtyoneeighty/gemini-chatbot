@@ -24,9 +24,11 @@ export async function POST(request: Request) {
     onFinish: async (result) => {
       if (session.user && session.user.id) {
         try {
+          // Get the final message from the steps
+          const finalMessage = result.steps[result.steps.length - 1];
           await saveChat({
             id,
-            messages: [...coreMessages, ...result.messages],
+            messages: [...coreMessages, finalMessage],
             userId: session.user.id,
           });
         } catch (error) {
