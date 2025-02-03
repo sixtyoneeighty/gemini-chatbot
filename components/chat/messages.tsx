@@ -1,6 +1,7 @@
 "use client"
 
 import { Message } from "@/types/chat"
+
 import { ChatBubble } from "./bubble"
 
 interface MessagesProps {
