@@ -1,39 +1,32 @@
-import { NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth"
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
+import { db } from "@/db"
 
-export const authConfig = {
+export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
+  adapter: DrizzleAdapter(db),
   pages: {
     signIn: "/login",
-    newUser: "/",
+    signOut: "/logout",
+    error: "/error",
+    verifyRequest: "/verify",
+    newUser: "/register"
   },
-  providers: [
-    // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
-    // while this file is also used in non-Node.js environments
-  ],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      let isLoggedIn = !!auth?.user;
-      let isOnChat = nextUrl.pathname.startsWith("/");
-      let isOnRegister = nextUrl.pathname.startsWith("/register");
-      let isOnLogin = nextUrl.pathname.startsWith("/login");
-
-      if (isLoggedIn && (isOnLogin || isOnRegister)) {
-        return Response.redirect(new URL("/", nextUrl));
+      const isLoggedIn = !!auth?.user
+      const isOnDashboard = nextUrl.pathname.startsWith("/(chat)")
+      
+      if (isOnDashboard) {
+        if (isLoggedIn) return true
+        return false // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL("/(chat)/page", nextUrl))
       }
+      return true
+    }
+  }
+})
 
-      if (isOnRegister || isOnLogin) {
-        return true; // Always allow access to register and login pages
-      }
-
-      if (isOnChat) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      }
-
-      if (isLoggedIn) {
-        return Response.redirect(new URL("/", nextUrl));
-      }
-
-      return true;
-    },
-  },
-} satisfies NextAuthConfig;
+export const config = {
+  providers: [] // Add your providers here
+}

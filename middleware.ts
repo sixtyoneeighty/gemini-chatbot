@@ -1,30 +1,21 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/app/(auth)/auth.config";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { auth } from "@/app/(auth)/auth.config";
 
-// Initialize the auth middleware
-const { auth: nextAuth } = NextAuth(authConfig);
-
-// Wrap the auth middleware to handle custom redirects
-export default async function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.has("next-auth.session-token");
+// This function can be marked `async` if using `await` inside
+export async function middleware(request: NextRequest) {
+  const session = await auth();
   
   // If user is logged in and trying to access home, redirect to chat
-  if (isAuthenticated && request.nextUrl.pathname === "/") {
+  if (session && request.nextUrl.pathname === "/") {
     return NextResponse.redirect(new URL("/(chat)/page", request.url));
   }
 
-  // Call the next-auth middleware
-  const authResult = await nextAuth(request);
-
-  // If auth middleware returns a response, return it
-  if (authResult) return authResult;
-
-  // Otherwise, continue with the request
+  // For all other routes, continue
   return NextResponse.next();
 }
 
+// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     /*
@@ -36,7 +27,6 @@ export const config = {
      */
     "/((?!_next/static|_next/image|favicon.ico|public).*)",
     "/",
-    "/:id",
     "/api/:path*",
     "/login",
     "/register"
