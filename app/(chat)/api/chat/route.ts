@@ -27,16 +27,12 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: geminiProModel,
     messages: coreMessages,
-    experimental_telemetry: {
-      isEnabled: true,
-      functionId: "stream-text",
-    },
-    onFinish: async ({ responseMessages }) => {
+    onFinish: async (result) => {
       if (session.user && session.user.id) {
         try {
           await saveChat({
             id,
-            messages: [...coreMessages, ...responseMessages],
+            messages: [...coreMessages, ...result.messages],
             userId: session.user.id,
           });
         } catch (error) {
