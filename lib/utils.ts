@@ -50,15 +50,17 @@ export function generateUUID(): string {
 }
 
 export function convertToUIMessages(
-  messages: Array<CoreMessage>,
+  messages: Array<CoreMessage>
 ): Array<Message> {
-  return messages.map((message) => ({
-    id: generateId(),
-    role: message.role,
-    content: typeof message.content === "string" 
-      ? message.content 
-      : message.content.map(c => c.type === "text" ? c.text : "").join(""),
-  }));
+  return messages
+    .filter(message => message.role !== "tool")
+    .map((message) => ({
+      id: generateId(),
+      role: message.role as Message["role"],
+      content: typeof message.content === "string" 
+        ? message.content 
+        : message.content.map(c => c.type === "text" ? c.text : "").join(""),
+    }));
 }
 
 export function getTitleFromChat(chat: Chat) {
