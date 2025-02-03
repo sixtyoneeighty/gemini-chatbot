@@ -1,44 +1,24 @@
-import { convertToCoreMessages, Message, streamText } from "ai";
+import { GoogleGenerativeAI } from "@google/generative-ai"
+import { GoogleGenerativeAIStream, Message, StreamingTextResponse } from "ai"
+import { auth } from "@/app/(auth)/auth.config"
 
-import { geminiProModel } from "@/ai";
-import { auth } from "@/app/(auth)/auth";
-import { saveChat, getChatById, deleteChatById } from "@/db/queries";
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY || "")
 
-export async function POST(request: Request) {
-  const { id, messages }: { id: string; messages: Array<Message> } =
-    await request.json();
-
-  const session = await auth();
-
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+export async function POST(req: Request) {
+  const session = await auth()
+  if (!session?.user) {
+    return new Response("Unauthorized", { status: 401 })
   }
 
-  const coreMessages = convertToCoreMessages(messages).filter(
-    (message) => message.content.length > 0,
-  );
+  const { messages } = await req.json()
+  const lastMessage = messages[messages.length - 1]
 
-  const result = await streamText({
-    model: geminiProModel,
-    messages: coreMessages,
-    onFinish: async (result) => {
-      if (session.user && session.user.id) {
-        try {
-          // Get the final message from the steps
-          const finalMessage = result.steps[result.steps.length - 1];
-          await saveChat({
-            id,
-            messages: [...coreMessages, finalMessage],
-            userId: session.user.id,
-          });
-        } catch (error) {
-          console.error("Failed to save chat");
-        }
-      }
-    },
-  });
+  const geminiStream = await genAI
+    .getGenerativeModel({ model: "gemini-pro" })
+    .generateContentStream(lastMessage.content)
 
-  return result.toDataStreamResponse({});
+  const stream = GoogleGenerativeAIStream(geminiStream)
+  return new StreamingTextResponse(stream)
 }
 
 export async function DELETE(request: Request) {
