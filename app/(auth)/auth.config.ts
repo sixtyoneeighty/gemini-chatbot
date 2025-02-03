@@ -1,6 +1,7 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import type { User } from "next-auth"
 
 import { db } from "@/db"
 
@@ -13,7 +14,7 @@ export const authConfig = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         // Add your credential validation logic here
         if (!credentials?.email || !credentials?.password) return null
         
@@ -21,7 +22,8 @@ export const authConfig = {
         return {
           id: "1",
           name: "Test User",
-          email: credentials.email
+          email: credentials.email as string, // Cast to string since we know it exists
+          image: null
         }
       }
     })
