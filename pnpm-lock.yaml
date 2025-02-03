@@ -11,6 +11,9 @@ importers:
       '@ai-sdk/google':
         specifier: ^1.1.8
         version: 1.1.8(zod@3.23.8)
+      '@headlessui/react':
+        specifier: ^1.7.18
+        version: 1.7.19(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
@@ -84,8 +87,8 @@ importers:
         specifier: ^1.2.4
         version: 1.2.4(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
       lucide-react:
-        specifier: ^0.446.0
-        version: 0.446.0(react@19.0.0-rc-7771d3a7-20240827)
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.0.0-rc-7771d3a7-20240827)
       next:
         specifier: 15.0.0-canary.152
         version: 15.0.0-canary.152(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
@@ -699,6 +702,13 @@ packages:
 
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+
+  '@headlessui/react@1.7.19':
+    resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
+      react-dom: ^16 || ^17 || ^18
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -1325,6 +1335,15 @@ packages:
 
   '@swc/helpers@0.5.13':
     resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
+
+  '@tanstack/react-virtual@3.12.0':
+    resolution: {integrity: sha512-6krceiPN07kpxXmU6m8AY7EL0X1gHLu8m3nJdh4phvktzVNxkQfBmSwnRUpoUjGQO1PAn8wSAhYaL8hY1cS1vw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/virtual-core@3.12.0':
+    resolution: {integrity: sha512-7mDINtua3v/pOnn6WUmuT9dPXYSO7WidFej7JzoAfqEOcbbpt/iZ1WPqd+eg+FnrL9nUJK8radqj4iAU51Zchg==}
 
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
@@ -2547,10 +2566,10 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lucide-react@0.446.0:
-    resolution: {integrity: sha512-BU7gy8MfBMqvEdDPH79VhOXSEgyG8TSPOKWaExWGCQVqnGH7wGgDngPbofu+KdtVjPQBWbEmnfMTq90CTiiDRg==}
+  lucide-react@0.344.0:
+    resolution: {integrity: sha512-6YyBnn91GB45VuVT96bYCOKElbJzUHqp65vX8cDcu55MQL9T969v4dhGClpljamuI/+KMO9P6w9Acq1CVQGvIQ==}
     peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
   markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
@@ -3842,6 +3861,13 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
+  '@headlessui/react@1.7.19(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)':
+    dependencies:
+      '@tanstack/react-virtual': 3.12.0(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)
+      client-only: 0.0.1
+      react: 19.0.0-rc-7771d3a7-20240827
+      react-dom: 19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827)
+
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -4377,6 +4403,14 @@ snapshots:
   '@swc/helpers@0.5.13':
     dependencies:
       tslib: 2.6.3
+
+  '@tanstack/react-virtual@3.12.0(react-dom@19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827))(react@19.0.0-rc-7771d3a7-20240827)':
+    dependencies:
+      '@tanstack/virtual-core': 3.12.0
+      react: 19.0.0-rc-7771d3a7-20240827
+      react-dom: 19.0.0-rc-7771d3a7-20240827(react@19.0.0-rc-7771d3a7-20240827)
+
+  '@tanstack/virtual-core@3.12.0': {}
 
   '@types/cookie@0.6.0': {}
 
@@ -5771,7 +5805,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lucide-react@0.446.0(react@19.0.0-rc-7771d3a7-20240827):
+  lucide-react@0.344.0(react@19.0.0-rc-7771d3a7-20240827):
     dependencies:
       react: 19.0.0-rc-7771d3a7-20240827
 
