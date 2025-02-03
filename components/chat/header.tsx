@@ -34,7 +34,7 @@ export function Header() {
       </div>
       <div className="flex-1 flex justify-end">
         <button className="text-gray-400 hover:text-gray-300 transition-colors">
-          <Download className="w-5 h-5" />
+          <Download className="size-5" />
         </button>
       </div>
     </div>

@@ -38,7 +38,7 @@ export function ChatInput({ onSendMessage, isSidebarOpen, isLoading }: ChatInput
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
           >
-            <PaperclipIcon className="w-5 h-5" />
+            <PaperclipIcon className="size-5" />
           </button>
         </div>
         <button
@@ -48,7 +48,7 @@ export function ChatInput({ onSendMessage, isSidebarOpen, isLoading }: ChatInput
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          <SendIcon className="w-5 h-5" />
+          <SendIcon className="size-5" />
         </button>
       </form>
     </div>

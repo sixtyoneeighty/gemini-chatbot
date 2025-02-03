@@ -2,6 +2,7 @@
 
 import { Menu } from "@headlessui/react"
 import { LogOut, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, User } from "lucide-react"
+import Image from "next/image"
 
 interface SidebarProps {
   isOpen: boolean
@@ -17,17 +18,19 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
     >
       <div>
         <div className="flex items-center justify-between mb-8">
-          {isOpen ? (
-            <img src="/mojo-logo.png" alt="Mojo" className="w-10 h-10" />
-          ) : (
-            <img src="/mojo-logo.png" alt="Mojo" className="w-8 h-8" />
-          )}
+          <Image 
+            src="/mojo-logo.png" 
+            alt="Mojo" 
+            width={40}
+            height={40}
+            className="size-10" 
+          />
           <button
             onClick={onToggle}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
           >
             {isOpen ? (
-              <PanelLeftClose className="w-5 h-5 text-gray-400" />
+              <PanelLeftClose className="size-5 text-gray-400" />
             ) : (
               <PanelLeftOpen className="w-5 h-5 text-gray-400" />
             )}

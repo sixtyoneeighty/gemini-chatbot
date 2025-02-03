@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import { Message } from "ai"
 import { useChat } from "ai/react"
+
 import { ChatLayout } from "@/components/chat/layout"
 import { ChatInput } from "@/components/chat/input"
 import { Messages } from "@/components/chat/messages"
 import { Welcome } from "@/components/chat/welcome"
-import { Message } from "ai"
 
 export default function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
