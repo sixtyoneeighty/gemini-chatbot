@@ -6,39 +6,7 @@ import {
   timestamp,
   json,
   uuid,
-  text,
-  primaryKey,
-  integer
 } from "drizzle-orm/pg-core";
-import type { AdapterAccount } from "@auth/core/adapters";
-
-export const users = pgTable("user", {
-  id: text("id").notNull().primaryKey(),
-  name: text("name"),
-  email: text("email").notNull(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image")
-});
-
-export const sessions = pgTable("session", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull()
-});
-
-export const verificationTokens = pgTable(
-  "verificationToken",
-  {
-    identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull()
-  },
-  (vt) => ({
-    compoundKey: primaryKey(vt.identifier, vt.token)
-  })
-);
 
 export const user = pgTable("User", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),

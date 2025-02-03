@@ -1,26 +1,44 @@
-import { google } from '@ai-sdk/google'
-import { StreamingTextResponse } from 'ai'
-import { auth } from "@/app/(auth)/auth.config"
+import { convertToCoreMessages, Message, streamText } from "ai";
 
-export async function POST(req: Request) {
-  const session = await auth()
-  if (!session?.user) {
-    return new Response("Unauthorized", { status: 401 })
+import { geminiProModel } from "@/ai";
+import { auth } from "@/app/(auth)/auth";
+import { saveChat, getChatById, deleteChatById } from "@/db/queries";
+
+export async function POST(request: Request) {
+  const { id, messages }: { id: string; messages: Array<Message> } =
+    await request.json();
+
+  const session = await auth();
+
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
   }
 
-  const { messages } = await req.json()
-  const lastMessage = messages[messages.length - 1]
+  const coreMessages = convertToCoreMessages(messages).filter(
+    (message) => message.content.length > 0,
+  );
 
-  // Create a Gemini Pro model instance
-  const model = google('models/gemini-pro')
+  const result = await streamText({
+    model: geminiProModel,
+    messages: coreMessages,
+    onFinish: async (result) => {
+      if (session.user && session.user.id) {
+        try {
+          // Get the final message from the steps
+          const finalMessage = result.steps[result.steps.length - 1];
+          await saveChat({
+            id,
+            messages: [...coreMessages, finalMessage],
+            userId: session.user.id,
+          });
+        } catch (error) {
+          console.error("Failed to save chat");
+        }
+      }
+    },
+  });
 
-  // Generate a streaming response
-  const response = await model.streamText({
-    messages: [{ role: 'user', content: lastMessage.content }]
-  })
-
-  // Return the streaming response
-  return new StreamingTextResponse(response)
+  return result.toDataStreamResponse({});
 }
 
 export async function DELETE(request: Request) {

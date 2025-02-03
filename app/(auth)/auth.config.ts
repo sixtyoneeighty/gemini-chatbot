@@ -1,48 +1,39 @@
-import NextAuth from "next-auth"
-import type { NextAuthConfig } from "next-auth"
-import Credentials from "next-auth/providers/credentials"
-import { z } from "zod"
-
-const credentialsSchema = z.object({ 
-  email: z.string().email(),
-  password: z.string().min(6) 
-})
+import { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
   pages: {
-    signIn: "/login"
+    signIn: "/login",
+    newUser: "/",
   },
   providers: [
-    Credentials({
-      async authorize(credentials) {
-        const parsed = credentialsSchema.safeParse(credentials)
-        if (!parsed.success) return null
-
-        // For development, accept any valid email/password
-        return {
-          id: "1",
-          name: "Test User",
-          email: parsed.data.email
-        }
-      }
-    })
+    // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
+    // while this file is also used in non-Node.js environments
   ],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const isOnDashboard = nextUrl.pathname.startsWith("/(chat)")
-      
-      if (isOnDashboard) {
-        if (isLoggedIn) return true
-        return false // Redirect unauthenticated users to login page
+      let isLoggedIn = !!auth?.user;
+      let isOnChat = nextUrl.pathname.startsWith("/");
+      let isOnRegister = nextUrl.pathname.startsWith("/register");
+      let isOnLogin = nextUrl.pathname.startsWith("/login");
+
+      if (isLoggedIn && (isOnLogin || isOnRegister)) {
+        return Response.redirect(new URL("/", nextUrl));
       }
-      return true
-    }
-  }
-} satisfies NextAuthConfig
 
-export const { auth, signIn, signOut } = NextAuth(authConfig)
+      if (isOnRegister || isOnLogin) {
+        return true; // Always allow access to register and login pages
+      }
 
-export const config = {
-  providers: [] // Add your providers here
-}
+      if (isOnChat) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      }
+
+      if (isLoggedIn) {
+        return Response.redirect(new URL("/", nextUrl));
+      }
+
+      return true;
+    },
+  },
+} satisfies NextAuthConfig;
