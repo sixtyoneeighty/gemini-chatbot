@@ -1,7 +1,7 @@
 "use client"
 
-import { useChat } from "ai/react"
 import { Message } from "ai"
+import { useChat } from "ai/react"
 import { useState } from "react"
 
 import { ChatInput } from "@/components/chat/input"

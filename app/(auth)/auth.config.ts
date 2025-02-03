@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials"
 
 import { db } from "@/db"
 
-export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
+export const authConfig = {
   adapter: DrizzleAdapter(db),
   providers: [
     Credentials({
@@ -47,7 +47,9 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
       return true
     }
   }
-})
+}
+
+export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth(authConfig)
 
 export const config = {
   providers: [] // Add your providers here
