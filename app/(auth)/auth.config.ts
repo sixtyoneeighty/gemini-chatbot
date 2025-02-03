@@ -1,9 +1,30 @@
 import NextAuth from "next-auth"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { db } from "@/db"
+import Credentials from "next-auth/providers/credentials"
 
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
+  providers: [
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // Add your credential validation logic here
+        if (!credentials?.email || !credentials?.password) return null
+        
+        // For testing, return a mock user
+        return {
+          id: "1",
+          name: "Test User",
+          email: credentials.email
+        }
+      }
+    })
+  ],
   pages: {
     signIn: "/login",
     signOut: "/logout",
