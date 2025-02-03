@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Message } from "ai"
 import { useChat } from "ai/react"
+import { Message } from "ai"
+import { useState } from "react"
 
-import { ChatLayout } from "@/components/chat/layout"
 import { ChatInput } from "@/components/chat/input"
+import { ChatLayout } from "@/components/chat/layout"
 import { Messages } from "@/components/chat/messages"
 import { Welcome } from "@/components/chat/welcome"
 

@@ -32,7 +32,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             {isOpen ? (
               <PanelLeftClose className="size-5 text-gray-400" />
             ) : (
-              <PanelLeftOpen className="w-5 h-5 text-gray-400" />
+              <PanelLeftOpen className="size-5 text-gray-400" />
             )}
           </button>
         </div>
@@ -40,7 +40,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <button
           className="w-full flex items-center gap-3 p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-300 mb-4"
         >
-          <MessageSquarePlus className="w-5 h-5" />
+          <MessageSquarePlus className="size-5" />
           {isOpen && <span>New Chat</span>}
         </button>
       </div>
@@ -48,7 +48,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       <div>
         <Menu as="div" className="relative">
           <Menu.Button className="w-full flex items-center gap-3 p-2 hover:bg-stone-900 rounded-lg transition-colors text-gray-300">
-            <User className="w-5 h-5" />
+            <User className="size-5" />
             {isOpen && <span>Profile</span>}
           </Menu.Button>
           <Menu.Items className="absolute bottom-full left-0 w-full mb-2 bg-stone-900 rounded-lg shadow-lg p-1">
@@ -59,7 +59,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     active ? "bg-gray-700" : ""
                   } flex items-center gap-2 w-full p-2 rounded-lg text-gray-300 text-sm`}
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="size-4" />
                   Logout
                 </button>
               )}

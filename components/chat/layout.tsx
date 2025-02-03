@@ -1,8 +1,9 @@
 "use client"
 
 import { ReactNode } from "react"
-import { Sidebar } from "./sidebar"
+
 import { Header } from "./header"
+import { Sidebar } from "./sidebar"
 
 interface ChatLayoutProps {
   children: ReactNode

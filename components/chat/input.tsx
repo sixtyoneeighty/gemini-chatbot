@@ -1,7 +1,7 @@
 "use client"
 
-import { FormEvent, useState } from "react"
 import { PaperclipIcon, SendIcon } from "lucide-react"
+import { FormEvent, useState } from "react"
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void
