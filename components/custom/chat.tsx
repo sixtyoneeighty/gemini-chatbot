@@ -1,78 +1,94 @@
 "use client";
 
-import { Attachment, Message } from "ai";
-import { useChat } from "ai/react";
-import { useState } from "react";
+import { Message as AIMessage, useChat } from "ai";
+import { Attachment } from "ai";
+import { useEffect, useRef } from "react";
 
-import { Message as PreviewMessage } from "@/components/custom/message";
-import { useScrollToBottom } from "@/components/custom/use-scroll-to-bottom";
+import { Message } from "./message";
 
-import { MultimodalInput } from "./multimodal-input";
-import { Overview } from "./overview";
-
-export function Chat({
-  id,
-  initialMessages,
-}: {
+interface ChatProps {
   id: string;
-  initialMessages: Array<Message>;
-}) {
-  const { messages, handleSubmit, input, setInput, append, isLoading, stop } =
-    useChat({
+  initialMessages?: Array<AIMessage>;
+}
+
+export function Chat({ id, initialMessages }: ChatProps) {
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error,
+    append,
+    setMessages,
+  } = useChat({
+    api: "/api/chat",
+    id,
+    initialMessages,
+    body: {
       id,
-      body: { id },
-      initialMessages,
-      maxSteps: 10,
-      onFinish: () => {
-        window.history.replaceState({}, "", `/chat/${id}`);
-      },
-    });
+    },
+  });
 
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div className="flex flex-row justify-center pb-4 md:pb-8 h-dvh bg-background">
-      <div className="flex flex-col justify-between items-center gap-4">
-        <div
-          ref={messagesContainerRef}
-          className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
-        >
-          {messages.length === 0 && <Overview />}
-
-          {messages.map((message) => (
-            <PreviewMessage
-              key={message.id}
-              chatId={id}
-              role={message.role}
-              content={message.content}
-              attachments={message.experimental_attachments}
-              toolInvocations={message.toolInvocations}
-            />
-          ))}
-
-          <div
-            ref={messagesEndRef}
-            className="shrink-0 min-w-[24px] min-h-[24px]"
+    <div className="flex flex-col h-full max-h-screen">
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto pb-[200px] pt-4 space-y-6"
+      >
+        {messages.map((message) => (
+          <Message
+            key={message.id}
+            role={message.role}
+            content={message.content}
+            attachments={message.experimental_attachments}
           />
-        </div>
+        ))}
 
-        <form className="flex flex-row gap-2 relative items-end w-full md:max-w-[500px] max-w-[calc(100dvw-32px) px-4 md:px-0">
-          <MultimodalInput
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            isLoading={isLoading}
-            stop={stop}
-            attachments={attachments}
-            setAttachments={setAttachments}
-            messages={messages}
-            append={append}
+        {isLoading && (
+          <Message
+            role="assistant"
+            content="..."
           />
-        </form>
+        )}
+
+        {error && (
+          <Message
+            role="assistant"
+            content="An error occurred. Please try again."
+          />
+        )}
       </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="fixed inset-x-0 bottom-0 bg-gradient-to-b from-transparent to-white dark:to-zinc-900 p-4"
+      >
+        <div className="mx-auto max-w-[500px] flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <input
+              className="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-md px-4 py-2"
+              value={input}
+              placeholder="Say something..."
+              onChange={handleInputChange}
+            />
+            <button
+              className="bg-zinc-900 dark:bg-zinc-200 text-white dark:text-zinc-900 rounded-md px-4 py-2"
+              type="submit"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
