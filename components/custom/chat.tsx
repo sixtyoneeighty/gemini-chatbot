@@ -1,7 +1,7 @@
 "use client";
 
-import { useChat } from "ai/react";
 import { Message as AIMessage } from "ai";
+import { useChat } from "ai/react";
 import { useEffect, useRef } from "react";
 
 import { Message } from "./message";
