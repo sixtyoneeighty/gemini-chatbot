@@ -27,9 +27,7 @@ export default function ChatPage() {
   })
 
   const handleSendMessage = (text: string) => {
-    const formData = new FormData()
-    formData.append("message", text)
-    handleSubmit(new Event("submit") as any, { formData })
+    handleSubmit(new Event("submit") as any, { data: { message: text } })
   }
 
   return (
