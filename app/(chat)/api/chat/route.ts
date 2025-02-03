@@ -1,14 +1,6 @@
 import { convertToCoreMessages, Message, streamText } from "ai";
-import { z } from "zod";
-
-import { geminiProModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
-import {
-  deleteChatById,
-  getChatById,
-  saveChat,
-} from "@/db/queries";
-import { generateUUID } from "@/lib/utils";
+import { saveChat, getChatById, deleteChatById } from "@/db/queries";
 
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
@@ -27,12 +19,16 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: geminiProModel,
     messages: coreMessages,
-    onFinish: async (result) => {
+    experimental_telemetry: {
+      isEnabled: true,
+      functionId: "stream-text",
+    },
+    onFinish: async ({ responseMessages }) => {
       if (session.user && session.user.id) {
         try {
           await saveChat({
             id,
-            messages: [...coreMessages, ...result.messages],
+            messages: [...coreMessages, ...responseMessages],
             userId: session.user.id,
           });
         } catch (error) {
