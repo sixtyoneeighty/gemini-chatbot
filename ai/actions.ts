@@ -132,3 +132,18 @@ export async function generateReservationPrice(props: {
 
   return reservation;
 }
+
+export async function webSearch(query: string): Promise<any> {
+  const response = await fetch('https://api.tavily.com/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.TAVILY_API_KEY}`
+    },
+    body: JSON.stringify({
+      query,
+      search_depth: 'basic'
+    })
+  });
+  return await response.json();
+}

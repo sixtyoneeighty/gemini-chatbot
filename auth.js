@@ -1,14 +1,24 @@
-import { NextAuthConfig } from "next-auth";
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import { compare } from "bcrypt-ts";
+import { getUser } from "@/db/queries";
 
-export const authConfig = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/login",
     newUser: "/",
   },
   providers: [
-    // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
-    // while this file is also used in non-Node.js environments
+    Credentials({
+      credentials: {},
+      async authorize({ email, password }) {
+        let users = await getUser(email);
+        if (users.length === 0) return null;
+        let passwordsMatch = await compare(password, users[0].password);
+        if (passwordsMatch) return users[0];
+      },
+    }),
   ],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -36,5 +46,19 @@ export const authConfig = {
 
       return true;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id;
+      }
+
+      return session;
+    },
   },
-} satisfies NextAuthConfig;
+});

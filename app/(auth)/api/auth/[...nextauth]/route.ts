@@ -1,1 +1,1 @@
-export { GET, POST } from "@/app/(auth)/auth";
+export { handlers as GET, handlers as POST } from "@/auth";
