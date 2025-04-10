@@ -1,10 +1,10 @@
 'use client'; // Mark as client component
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
 import { z } from "zod";
 
 import { auth } from "@/lib/firebase";

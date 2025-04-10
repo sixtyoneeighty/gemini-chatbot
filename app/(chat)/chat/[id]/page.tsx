@@ -1,8 +1,8 @@
 "use client";
 
+import { CoreMessage } from "ai";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
-import { CoreMessage } from "ai";
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
