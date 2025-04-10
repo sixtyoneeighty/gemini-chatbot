@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+
 import { BotIcon, InfoIcon, MessageIcon } from "./icons";
 
 export const Overview = () => {
