@@ -1,8 +1,9 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
-import { auth } from "@/app/(auth)/auth";
+import admin from 'firebase-admin';
+import { getAuth as getAdminAuth } from 'firebase-admin/auth';
+import '@/lib/firebaseAdmin'; // Ensure Firebase Admin is initialized
 
 const FileSchema = z.object({
   file: z
@@ -20,11 +21,28 @@ const FileSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const session = await auth();
+  // Remove incorrect session check: const session = await auth();
 
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // if (!session) { - REMOVED Check - Handled by token verification
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
+
+  // --- Firebase Auth Check ---
+  const authorization = request.headers.get("Authorization");
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return NextResponse.json({ error: "Unauthorized: Missing or invalid Authorization header" }, { status: 401 });
   }
+  const token = authorization.split("Bearer ")[1];
+  let userId: string;
+  try {
+    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    userId = decodedToken.uid;
+    // userId is available here if needed for associating uploads with users
+  } catch (error) {
+    console.error("Error verifying Firebase ID token:", error);
+    return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
+  }
+  // --- End Firebase Auth Check ---
 
   if (request.body === null) {
     return new Response("Request body is empty", { status: 400 });

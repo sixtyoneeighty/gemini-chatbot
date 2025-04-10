@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-import { auth, signOut } from "@/app/(auth)/auth";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
+import { useRouter } from 'next/navigation';
 
 import { History } from "./history";
 import { SlashIcon } from "./icons";
@@ -14,14 +17,27 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-export const Navbar = async () => {
-  let session = await auth();
+export const Navbar = () => {
+  const [user, loadingAuth, errorAuth] = useAuthState(firebaseAuth);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await firebaseAuth.signOut();
+      // Optionally redirect after sign out, e.g., to home page
+      router.push('/'); 
+      // Or use router.refresh() if you want the page to reload data based on auth state
+    } catch (error) {
+      console.error("Error signing out:", error);
+      // Handle sign-out error (e.g., show a notification)
+    }
+  };
 
   return (
     <>
       <div className="bg-background absolute top-0 left-0 w-dvw py-2 px-3 justify-between flex flex-row items-center z-30">
         <div className="flex flex-row gap-3 items-center">
-          <History user={session?.user} />
+          <History user={user} />
           <div className="flex flex-row gap-2 items-center">
             <Image
               src="/images/gemini-logo.png"
@@ -38,14 +54,18 @@ export const Navbar = async () => {
           </div>
         </div>
 
-        {session ? (
+        {loadingAuth ? (
+           <div>Loading User...</div>
+         ) : errorAuth ? (
+           <div>Error loading user</div>
+         ) : user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 className="py-1.5 px-2 h-fit font-normal"
                 variant="secondary"
               >
-                {session.user?.email}
+                {user.email}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -53,23 +73,13 @@ export const Navbar = async () => {
                 <ThemeToggle />
               </DropdownMenuItem>
               <DropdownMenuItem className="p-1 z-50">
-                <form
-                  className="w-full"
-                  action={async () => {
-                    "use server";
-
-                    await signOut({
-                      redirectTo: "/",
-                    });
-                  }}
+                <button
+                  onClick={handleSignOut}
+                  type="button"
+                  className="w-full text-left px-1 py-0.5 text-red-500"
                 >
-                  <button
-                    type="submit"
-                    className="w-full text-left px-1 py-0.5 text-red-500"
-                  >
-                    Sign out
-                  </button>
-                </form>
+                  Sign out
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
