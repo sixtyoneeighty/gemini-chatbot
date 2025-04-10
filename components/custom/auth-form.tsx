@@ -8,7 +8,6 @@ import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, create
 import { z } from "zod";
 
 import { auth } from "@/lib/firebase";
-import { authFormSchema } from "@/lib/utils";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
