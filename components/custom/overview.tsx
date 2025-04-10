@@ -1,4 +1,5 @@
-import { SmileIcon, SunIcon, MessageIcon } from "./icons";
+import { motion } from "framer-motion";
+import { BotIcon, InfoIcon, MessageIcon } from "./icons";
 
 export const Overview = () => {
   return (
@@ -12,9 +13,9 @@ export const Overview = () => {
     >
       <div className="border-none bg-muted/50 rounded-2xl p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
         <p className="flex flex-row justify-center gap-4 items-center text-zinc-900 dark:text-zinc-50">
-          <SunIcon />
+          <InfoIcon />
           <span>+</span>
-          <SmileIcon />
+          <BotIcon />
           <span>+</span>
           <MessageIcon />
         </p>
