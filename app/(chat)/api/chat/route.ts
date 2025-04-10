@@ -7,12 +7,12 @@ import {
   ToolCallPart,
   ToolResultPart,
 } from "ai";
-import { z } from "zod";
 import admin from 'firebase-admin';
 import { getAuth as getAdminAuth } from 'firebase-admin/auth';
-import '@/lib/firebaseAdmin'; // Ensure Firebase Admin is initialized
+import { z } from "zod";
 
 import { geminiProModel } from "@/ai";
+import '@/lib/firebaseAdmin'; // Ensure Firebase Admin is initialized
 import {
   deleteChatById,
   getChatById,

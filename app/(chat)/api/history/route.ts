@@ -1,6 +1,7 @@
-import { getChatsByUserId } from "@/db/queries";
 import admin from 'firebase-admin';
 import { getAuth as getAdminAuth } from 'firebase-admin/auth';
+
+import { getChatsByUserId } from "@/db/queries";
 import '@/lib/firebaseAdmin'; // Ensure Firebase Admin is initialized
 
 export async function GET(request: Request) {

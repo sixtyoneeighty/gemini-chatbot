@@ -1,12 +1,18 @@
 'use client'; // Mark as client component
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // For redirection
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
-import { auth } from '@/lib/firebase'; // Import initialized auth
-import { Input } from '../ui/input';
+import { useEffect, useState } from 'react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { z } from "zod";
+
+import { auth } from "@/lib/firebase";
+import { authFormSchema } from "@/lib/utils";
+
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { Label } from '../ui/label';
-import { Button } from '../ui/button'; // Assuming you have a Button component
 
 export function AuthForm({
   type, // 'login' or 'register'

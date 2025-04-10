@@ -1,13 +1,14 @@
 "use client";
 
+import { GoogleAuthProvider, signInWithPopup, AuthError } from 'firebase/auth'; // Firebase imports
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GoogleAuthProvider, signInWithPopup, AuthError } from 'firebase/auth'; // Firebase imports
-import { auth } from '@/lib/firebase'; // Firebase auth instance
+import { useState } from 'react'; // Keep useState for loading/error state for Google Sign-In
+
 import { AuthForm } from '@/components/custom/auth-form'; // Ensure correct path
 import { LogoGoogle } from '@/components/custom/icons';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react'; // Keep useState for loading/error state for Google Sign-In
+import { auth } from '@/lib/firebase'; // Firebase auth instance
 
 export default function RegisterPage() {
   const router = useRouter();

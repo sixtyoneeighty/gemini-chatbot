@@ -1,9 +1,9 @@
 // components/custom/auth-provider.tsx
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase'; // Import your Firebase auth instance
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase'; // Adjust the path as necessary
 
 interface AuthContextType {
   user: User | null;

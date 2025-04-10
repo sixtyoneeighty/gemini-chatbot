@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import { notFound, useRouter } from "next/navigation";
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
 import { CoreMessage } from "ai";
 
-// Remove server-side auth import: import { auth } from "@/app/(auth)/auth";
+import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
 import { Chat as PreviewChat } from "@/components/custom/chat";
 // We need an API route to fetch chat data securely now
 // import { getChatById } from "@/db/queries"; // Can't use DB queries directly on client
