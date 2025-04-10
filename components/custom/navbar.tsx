@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
+
 import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
 
 import { History } from "./history";

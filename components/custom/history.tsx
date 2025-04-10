@@ -2,9 +2,9 @@
 
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import cx from "classnames";
+import { User } from "firebase/auth";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import useSWR from "swr";

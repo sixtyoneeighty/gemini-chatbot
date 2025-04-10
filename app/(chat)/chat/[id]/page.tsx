@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
 import { notFound, useRouter } from "next/navigation";
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useEffect, useState } from 'react';
 import { CoreMessage } from "ai";
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { auth as firebaseAuth } from '@/lib/firebase'; // Client-side Firebase auth instance
 import { Chat as PreviewChat } from "@/components/custom/chat";
