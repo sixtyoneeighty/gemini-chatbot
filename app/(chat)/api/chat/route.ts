@@ -8,9 +8,11 @@ import {
   ToolResultPart,
 } from "ai";
 import { z } from "zod";
+import admin from 'firebase-admin';
+import { getAuth as getAdminAuth } from 'firebase-admin/auth';
+import '@/lib/firebaseAdmin'; // Ensure Firebase Admin is initialized
 
 import { geminiProModel } from "@/ai";
-import { auth } from "@/app/(auth)/auth";
 import {
   deleteChatById,
   getChatById,
@@ -79,11 +81,37 @@ export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
     await request.json();
 
-  const session = await auth();
-
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+  // --- Firebase Auth Check ---
+  const authorization = request.headers.get("Authorization");
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return new Response("Unauthorized: Missing or invalid Authorization header", { status: 401 });
   }
+  const token = authorization.split("Bearer ")[1];
+  let userId: string;
+  try {
+    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    userId = decodedToken.uid;
+     // You can use userId here if needed for POST logic, e.g., associating chat with user
+  } catch (error) {
+    console.error("Error verifying Firebase ID token:", error);
+    return new Response("Unauthorized: Invalid token", { status: 401 });
+  }
+  // --- End Firebase Auth Check ---
+
+  /*
+  TODO: Re-evaluate how to get user session/ID here if needed.
+  The middleware handles unauthorized access, but route might need user ID.
+  Possible approaches:
+  1. Verify ID token sent from client using Firebase Admin SDK. (DONE)
+  2. Assume middleware protection is sufficient if only logged-in status matters.
+  */
+  // const session = null; // Placeholder - Adapt based on chosen strategy - REMOVED
+
+  // if (!session) { - REMOVED Check - Handled by token verification
+    // This check needs to be replaced with a valid session check or removed
+    // if middleware guarantees authentication. For now, let it pass.
+    // return new Response("Unauthorized", { status: 401 });
+  // }
 
   const coreMessages = convertToCoreMessages(messages).filter(
     (message): message is CoreMessage & { content: string } =>
@@ -114,17 +142,42 @@ export async function DELETE(request: Request) {
     return new Response("Not Found", { status: 404 });
   }
 
-  const session = await auth();
-
-  if (!session || !session.user) {
-    return new Response("Unauthorized", { status: 401 });
+  // --- Firebase Auth Check ---
+  const authorization = request.headers.get("Authorization");
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return new Response("Unauthorized: Missing or invalid Authorization header", { status: 401 });
   }
+  const token = authorization.split("Bearer ")[1];
+  let userId: string;
+  try {
+    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    userId = decodedToken.uid;
+  } catch (error) {
+    console.error("Error verifying Firebase ID token:", error);
+    return new Response("Unauthorized: Invalid token", { status: 401 });
+  }
+  // --- End Firebase Auth Check ---
+
+  /*
+  TODO: Re-evaluate how to get user session/ID here if needed.
+  See notes in POST handler.
+  */
+  // const session = null; // Placeholder - Adapt based on chosen strategy - REMOVED
+
+  // if (!session || !session.user) { - REMOVED Check - Handled by token verification
+    // This check needs to be replaced with a valid session check or removed.
+    // For now, let it pass.
+    // return new Response("Unauthorized", { status: 401 });
+  // }
 
   try {
     const chat = await getChatById({ id });
 
-    if (chat.userId !== session.user.id) {
-      return new Response("Unauthorized", { status: 401 });
+    // Ensure the user deleting the chat is the owner
+    if (chat.userId !== userId) {
+      // TODO: Fix this user ID comparison once session handling is corrected. - DONE
+      // For now, comment out to prevent immediate error after removing `await auth()`
+      return new Response("Unauthorized: User does not own this chat", { status: 401 });
     }
 
     await deleteChatById({ id });
