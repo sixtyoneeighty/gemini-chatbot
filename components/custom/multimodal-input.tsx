@@ -21,14 +21,14 @@ import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
   {
-    title: "Help me book a flight",
-    label: "from San Francisco to London",
-    action: "Help me book a flight from San Francisco to London",
+    title: "What is the weather",
+    label: "in San Francisco?",
+    action: "What is the weather in San Francisco?",
   },
   {
-    title: "What is the status",
-    label: "of flight BA142 flying tmrw?",
-    action: "What is the status of flight BA142 flying tmrw?",
+    title: "Explain this image",
+    label: "",
+    action: "Explain this image",
   },
 ];
 
@@ -132,13 +132,13 @@ export function MultimodalInput({
       setUploadQueue(files.map((file) => file.name));
 
       try {
-        const uploadPromises = files.map((file) => uploadFile(file));
+        const uploadPromises = files.map((file) => uploadFile(file as File));
         const uploadedAttachments = await Promise.all(uploadPromises);
         const successfullyUploadedAttachments = uploadedAttachments.filter(
           (attachment) => attachment !== undefined,
         );
 
-        setAttachments((currentAttachments) => [
+        setAttachments((currentAttachments: Attachment[]) => [
           ...currentAttachments,
           ...successfullyUploadedAttachments,
         ]);
@@ -200,7 +200,7 @@ export function MultimodalInput({
             <PreviewAttachment key={attachment.url} attachment={attachment} />
           ))}
 
-          {uploadQueue.map((filename) => (
+          {uploadQueue.map((filename: string) => (
             <PreviewAttachment
               key={filename}
               attachment={{
@@ -221,7 +221,7 @@ export function MultimodalInput({
         onChange={handleInput}
         className="min-h-[24px] overflow-hidden resize-none rounded-lg text-base bg-muted border-none"
         rows={3}
-        onKeyDown={(event) => {
+        onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
           if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
 
@@ -237,7 +237,7 @@ export function MultimodalInput({
       {isLoading ? (
         <Button
           className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 text-white"
-          onClick={(event) => {
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             stop();
           }}
@@ -247,7 +247,7 @@ export function MultimodalInput({
       ) : (
         <Button
           className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 text-white"
-          onClick={(event) => {
+          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             submitForm();
           }}
@@ -259,7 +259,7 @@ export function MultimodalInput({
 
       <Button
         className="rounded-full p-1.5 h-fit absolute bottom-2 right-10 m-0.5 dark:border-zinc-700"
-        onClick={(event) => {
+        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault();
           fileInputRef.current?.click();
         }}
